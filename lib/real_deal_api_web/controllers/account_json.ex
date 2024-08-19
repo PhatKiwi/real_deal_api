@@ -8,6 +8,10 @@ defmodule RealDealApiWeb.AccountJSON do
     %{data: for(account <- accounts, do: data(account))}
   end
 
+  def show(%{account: account, token: token}) do
+    %{data: token_data(account, token)}
+  end
+
   @doc """
   Renders a single account.
   """
@@ -20,6 +24,14 @@ defmodule RealDealApiWeb.AccountJSON do
       id: account.id,
       email: account.email,
       hash_password: account.hash_password
+    }
+  end
+
+  defp token_data(%Account{} = account, token) do
+    %{
+      id: account.id,
+      email: account.email,
+      token: token
     }
   end
 end
