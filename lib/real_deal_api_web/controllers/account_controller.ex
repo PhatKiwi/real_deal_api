@@ -21,6 +21,21 @@ defmodule RealDealApiWeb.AccountController do
     end
   end
 
+  def sign_in(conn, %{"email" => email, "hash_password" => hash_password}) do
+    case Guardian.authenticate(email, hash_password) do
+      {:ok, account, token} ->
+        conn
+        |> put_status(:ok)
+        |> render(:show, account: account, token: token)
+
+      {:error, :unauthorized} ->
+        conn
+        |> put_status(:unauthorized)
+        |> put_view(json: RealDealApiWeb.ErrorJSON)
+        |> render("401.json")
+    end
+  end
+
   def show(conn, %{"id" => id}) do
     account = Accounts.get_account!(id)
     render(conn, :show, account: account)
